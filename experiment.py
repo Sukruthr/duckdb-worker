@@ -1,292 +1,169 @@
 import argparse
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
-import hashlib
 import json
 from pathlib import Path
-import platform
-import shutil
-import subprocess
-import sys
-from tempfile import TemporaryDirectory
 import threading
 import time
-import urllib.request
 
 import duckdb
 import psutil
 
-from experiment_report import write_report
+
+DATABASE = Path("work/concurrency.duckdb")
+TEMP_DIRECTORY = Path("work/spill")
+CONFIG = {"threads": 1, "preserve_insertion_order": False}
+MEMORY_LIMITS = {"normal": "1GB", "spill": "256MB", "oom": "1MB"}
 
 
-SOURCE_PAGE = "https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page"
-SOURCE_URL = "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2025-01.parquet"
-TOPOLOGIES = {
-    "case1": "1 connection / 1 cursor",
-    "case2": "2 connections / 1 cursor each",
-    "case3": "1 connection / 2 cursors",
-}
+def case_1(sql, memory_limit):
+    DATABASE.parent.mkdir(parents=True, exist_ok=True)
+    TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    config = {**CONFIG, "memory_limit": memory_limit, "temp_directory": str(TEMP_DIRECTORY)}
+    with duckdb.connect(str(DATABASE), config=config) as connection:
+        with connection.cursor() as cursor:
+            return {"case": "case1", **_run_requests([cursor, cursor, cursor], sql)}
 
 
-def download_data(destination):
-    if destination.exists():
-        print(f"Using cached data: {destination}", flush=True)
-        return
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    partial = destination.with_suffix(".part")
-    print(f"Downloading NYC TLC January 2025 yellow taxi data: {SOURCE_URL}", flush=True)
-    try:
-        with urllib.request.urlopen(SOURCE_URL, timeout=120) as response:
-            expected = response.headers.get("Content-Length")
-            with partial.open("wb") as output:
-                shutil.copyfileobj(response, output)
-        if expected and partial.stat().st_size != int(expected):
-            raise OSError("Incomplete dataset download")
-        partial.replace(destination)
-    finally:
-        partial.unlink(missing_ok=True)
+def case_2(sql, memory_limit):
+    DATABASE.parent.mkdir(parents=True, exist_ok=True)
+    TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    config = {**CONFIG, "memory_limit": memory_limit, "temp_directory": str(TEMP_DIRECTORY)}
+    # Both connections must exist before changing live global engine settings.
+    with duckdb.connect(str(DATABASE), config=config) as connection_a:
+        with duckdb.connect(str(DATABASE), config=config) as connection_b:
+            with connection_a.cursor() as cursor_a, connection_b.cursor() as cursor_b:
+                return {"case": "case2", **_run_requests([cursor_a, cursor_b, cursor_a], sql)}
 
 
-def prepare_database(database, data):
-    with duckdb.connect(str(database), config={"threads": 1, "memory_limit": "512MB"}) as con:
-        # A persistent view keeps every topology on exactly the same local input.
-        source = str(data).replace("'", "''")
-        con.execute(f"CREATE VIEW trips AS SELECT * FROM read_parquet('{source}')")
-        return con.execute("SELECT count(*) FROM trips").fetchone()[0]
+def case_3(sql, memory_limit):
+    DATABASE.parent.mkdir(parents=True, exist_ok=True)
+    TEMP_DIRECTORY.mkdir(parents=True, exist_ok=True)
+    config = {**CONFIG, "memory_limit": memory_limit, "temp_directory": str(TEMP_DIRECTORY)}
+    with duckdb.connect(str(DATABASE), config=config) as connection:
+        with connection.cursor() as cursor_a, connection.cursor() as cursor_b:
+            return {"case": "case3", **_run_requests([cursor_a, cursor_b, cursor_a], sql)}
 
 
-def directory_bytes(directory):
-    total = 0
-    for path in directory.rglob("*"):
-        try:
-            if path.is_file():
-                total += path.stat().st_size
-        except FileNotFoundError:
-            pass  # DuckDB can remove a spill file between enumeration and stat.
-    return total
+def _run_requests(request_cursors, sql):
+    cursors = list(dict.fromkeys(request_cursors))
+    cursor_ids = {cursor: index + 1 for index, cursor in enumerate(cursors)}
+    locks = {cursor: threading.Lock() for cursor in cursors}
+    cursors[0].execute("SET max_temp_directory_size = '2GB'")
+    values = cursors[0].execute(
+        "SELECT current_setting('memory_limit'), current_setting('threads'), "
+        "current_setting('max_temp_directory_size'), "
+        "current_setting('preserve_insertion_order'), current_setting('temp_directory')"
+    ).fetchone()
+    settings = dict(zip(
+        ["memory_limit", "threads", "max_temp_directory_size", "preserve_insertion_order", "temp_directory"],
+        values,
+    ))
+    for cursor in cursors:
+        cursor.execute("SET enable_profiling = 'no_output'")
+    print(f"Settings: {settings}", flush=True)
 
-
-def run_case(plan, root):
-    root.mkdir(parents=True, exist_ok=True)
-    requests = plan["requests"]
-    config = {
-        "memory_limit": plan["memory_limit"],
-        "threads": plan["threads"],
-        "preserve_insertion_order": False,
-    }
-    results = []
-    samples = []
+    barrier = threading.Barrier(4)
+    stop = threading.Event()
     process = psutil.Process()
-    with TemporaryDirectory(prefix="scratch-", dir=root) as scratch:
-        scratch = Path(scratch)
-        spill = scratch / "spill"
-        spill.mkdir()
-        config["temp_directory"] = str(spill)
-        parents, cursors = [], []
-        stop = threading.Event()
-        monitor = None
+    peak_rss = process.memory_info().rss
+
+    def sample_rss():
+        nonlocal peak_rss
+        while not stop.wait(0.05):
+            peak_rss = max(peak_rss, process.memory_info().rss)
+
+    def request(index, cursor):
+        barrier.wait()
+        arrived = time.perf_counter()
+        cursor_id = cursor_ids[cursor]
+        print(f"Request {index} ARRIVED cursor={cursor_id}", flush=True)
+        with locks[cursor]:
+            started = time.perf_counter()
+            print(f"Request {index} START cursor={cursor_id} queue={(started - arrived) * 1000:.1f}ms", flush=True)
+            rows, status, error = 0, "ok", None
+            buffer_peak, spill_peak = None, None
+            try:
+                cursor.execute(sql)
+                while batch := cursor.fetchmany(2048):
+                    rows += len(batch)
+            except duckdb.OutOfMemoryException as exc:
+                status, error = "duckdb_oom", str(exc)
+            except duckdb.Error as exc:
+                status, error = "query_error", str(exc)
+            finished = time.perf_counter()
+            if status == "ok":
+                # Read before another request or diagnostic query replaces this profile.
+                profile = json.loads(cursor.get_profiling_information())
+                buffer_peak = profile.get("system_peak_buffer_memory")
+                spill_peak = profile.get("system_peak_temp_dir_size")
+            record = {
+                "id": index, "cursor": cursor_id, "arrived_at": arrived,
+                "started_at": started, "finished_at": finished,
+                "queue_ms": (started - arrived) * 1000,
+                "query_ms": (finished - started) * 1000,
+                "total_ms": (finished - arrived) * 1000,
+                "rows_consumed": rows, "status": status, "error": error,
+            }
+            print(f"Request {index} FINISH cursor={cursor_id} status={status} "
+                  f"rows={rows:,} query={record['query_ms']:.1f}ms total={record['total_ms']:.1f}ms"
+                  + (f" | {error.splitlines()[0]}" if error else ""), flush=True)
+            return record, buffer_peak, spill_peak
+
+    monitor = threading.Thread(target=sample_rss, daemon=True)
+    monitor.start()
+    try:
+        with ThreadPoolExecutor(max_workers=3) as pool:
+            futures = [pool.submit(request, index + 1, cursor)
+                       for index, cursor in enumerate(request_cursors)]
+            barrier.wait()
+            outcomes = [future.result() for future in futures]
+    finally:
+        stop.set()
+        monitor.join()
+        peak_rss = max(peak_rss, process.memory_info().rss)
+
+    requests = [record for record, _, _ in outcomes]
+    buffer_peak = max((value for _, value, _ in outcomes if value is not None), default=None)
+    spill_peak = max((value for _, _, value in outcomes if value is not None), default=None)
+    usability = []
+    for cursor in cursors:
+        cursor.disable_profiling()
         try:
-            count = 2 if plan["topology"] == "case2" else 1
-            # Open matching connections before changing any global engine settings.
-            for _ in range(count):
-                parents.append(duckdb.connect(plan["database"], read_only=True, config=config))
-            if plan["topology"] == "case3":
-                cursors = [parents[0].cursor(), parents[0].cursor()]
-            else:
-                cursors = [parent.cursor() for parent in parents]
-            parents[0].execute("SET max_temp_directory_size = ?", [plan["max_temp_size"]])
-            settings = parents[0].execute(
-                "SELECT current_setting('memory_limit'), current_setting('threads'), "
-                "current_setting('max_temp_directory_size'), "
-                "current_setting('preserve_insertion_order')"
-            ).fetchone()
-            effective = dict(zip(
-                ["memory_limit", "threads", "max_temp_directory_size", "preserve_insertion_order"],
-                settings,
-            ))
-            for con in cursors:
-                con.execute("SET enable_profiling = 'json'")
-                con.execute("PRAGMA disable_profiling")
-                con.execute("SET profiling_coverage = 'ALL'")
-            locks = [threading.Lock() for _ in cursors]
-            barrier = threading.Barrier(requests + 1)
-            state_lock = threading.Lock()
-            active, max_active = 0, 0
-            origin = time.perf_counter()
-
-            def now_ms():
-                return (time.perf_counter() - origin) * 1000
-
-            def sample():
-                samples.append({"ms": now_ms(), "rss_bytes": process.memory_info().rss,
-                                "spill_bytes": directory_bytes(spill)})
-
-            def watch():
-                while not stop.wait(0.05):
-                    sample()
-
-            def send_request(index):
-                nonlocal active, max_active
-                slot = (index - 1) % len(cursors)
-                barrier.wait()
-                submitted = now_ms()
-                with locks[slot]:
-                    started = now_ms()
-                    with state_lock:
-                        active += 1
-                        max_active = max(max_active, active)
-                    con = cursors[slot]
-                    profile = root / f"request-{index}-profile.json"
-                    output = scratch / f"request-{index}.parquet"
-                    status, error, rows = "ok", None, None
-                    print(f"  request {index} START cursor {slot + 1} "
-                          f"queue={started - submitted:.1f}ms", flush=True)
-                    try:
-                        # Change the retained output path while profiling is disabled.
-                        con.execute("SET profiling_output = ?", [str(profile)])
-                        con.execute("SET enable_profiling = 'json'")
-                        con.sql(plan["query"]).write_parquet(
-                            str(output), compression="snappy", row_group_size=8192,
-                        )
-                    except duckdb.OutOfMemoryException as exc:
-                        status, error = "oom", str(exc)
-                    except duckdb.Error as exc:
-                        status, error = "error", str(exc)
-                    finally:
-                        finished = now_ms()
-                        con.execute("PRAGMA disable_profiling")
-                        with state_lock:
-                            active -= 1
-                    record = {
-                        "id": index, "cursor": slot + 1, "submitted_ms": submitted,
-                        "started_ms": started, "finished_ms": finished,
-                        "queue_ms": started - submitted, "query_ms": finished - started,
-                        "total_ms": finished - submitted, "status": status, "error": error,
-                        "rows": rows, "profile": profile.name if status == "ok" and profile.exists() else None,
-                    }
-                    print(f"  request {index} {status.upper()} "
-                          f"query={record['query_ms']:.1f}ms total={record['total_ms']:.1f}ms"
-                          + (f" | {error.splitlines()[0]}" if error else ""), flush=True)
-                    if status == "ok":
-                        # Validate the full export after disabling profiling, without fetching its rows.
-                        actual = con.execute("SELECT count(*) FROM read_parquet(?)", [str(output)]).fetchone()[0]
-                        record["rows"] = actual
-                        expected = plan.get("expected_rows")
-                        if expected is not None and actual != expected:
-                            record.update(status="error", error=f"Row count mismatch: {actual}, expected {expected}")
-                    if status != "ok":
-                        profile.unlink(missing_ok=True)
-                    output.unlink(missing_ok=True)
-                    return record
-
-            sample()
-            monitor = threading.Thread(target=watch, daemon=True)
-            monitor.start()
-            with ThreadPoolExecutor(max_workers=requests) as pool:
-                futures = [pool.submit(send_request, i + 1) for i in range(requests)]
-                barrier.wait()
-                results = [future.result() for future in futures]
-            elapsed = now_ms()
-            sample()
-            stop.set()
-            monitor.join()
-            survived = all(con.execute("SELECT 42").fetchone() == (42,) for con in cursors)
-        finally:
-            stop.set()
-            if monitor:
-                monitor.join()
-            for con in reversed(parents + cursors):
-                con.close()
-
-    profiles = [json.loads((root / result["profile"]).read_text(encoding="utf-8"))
-                for result in results if result["profile"]]
-    case = {
-        "topology": plan["topology"], "label": TOPOLOGIES[plan["topology"]],
-        "mode": plan["mode"], "memory_limit": plan["memory_limit"],
-        "effective_settings": effective, "elapsed_ms": elapsed,
-        "rss_peak_bytes": max(s["rss_bytes"] for s in samples),
-        "sampled_spill_peak_bytes": max(s["spill_bytes"] for s in samples),
-        "profile_spill_peak_bytes": max((p.get("system_peak_temp_dir_size", 0) for p in profiles), default=0),
-        "profile_buffer_peak_bytes": max((p.get("system_peak_buffer_memory", 0) for p in profiles), default=0),
-        "max_active_requests": max_active, "engine_survived": survived,
-        "requests": results, "samples": samples,
+            usability.append(cursor.execute("SELECT 42").fetchone() == (42,))
+        except duckdb.Error:
+            usability.append(False)
+    result = {
+        "settings": settings, "requests": requests,
+        "batch_ms": (max(r["finished_at"] for r in requests) - min(r["arrived_at"] for r in requests)) * 1000,
+        "peak_rss_bytes": peak_rss, "engine_peak_buffer_bytes": buffer_peak,
+        "engine_peak_spill_bytes": spill_peak, "engine_usable": all(usability),
     }
-    (root / "result.json").write_text(json.dumps(case, indent=2), encoding="utf-8")
-    return case
-
-
-def main():
-    parser = argparse.ArgumentParser(description="Three DuckDB connection/cursor cases, with three simultaneous requests each.")
-    parser.add_argument("--work-directory", type=Path, default=Path("work/experiment"))
-    parser.add_argument("--query", type=Path, default=Path(__file__).with_name("experiment.sql"))
-    parser.add_argument("--topology", choices=["all", *TOPOLOGIES], default="all")
-    parser.add_argument("--mode", choices=["all", "normal", "spill", "oom"], default="all")
-    parser.add_argument("--normal-memory", default="1GB")
-    parser.add_argument("--spill-memory", default="256MB")
-    parser.add_argument("--oom-memory", default="1MB")
-    parser.add_argument("--threads", type=int, default=1)
-    parser.add_argument("--requests", type=int, default=3)
-    parser.add_argument("--max-temp-size", default="2GB")
-    parser.add_argument("--worker", type=Path, help=argparse.SUPPRESS)
-    args = parser.parse_args()
-    if args.worker:
-        run_case(json.loads(args.worker.read_text(encoding="utf-8")), args.worker.parent)
-        return 0
-    if args.threads < 1 or not 1 <= args.requests <= 32:
-        parser.error("Use positive threads and between 1 and 32 requests")
-    work = args.work_directory.resolve()
-    work.mkdir(parents=True, exist_ok=True)
-    root = work / datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-    root.mkdir()
-    data = work / "yellow_tripdata_2025-01.parquet"
-    download_data(data)
-    query = args.query.read_text(encoding="utf-8")
-    with duckdb.connect() as con:
-        statements = con.extract_statements(query)
-        if len(statements) != 1 or statements[0].type != duckdb.StatementType.SELECT:
-            parser.error("The query file must contain exactly one SELECT using the trips view")
-    database = root / "input.duckdb"
-    row_count = prepare_database(database, data)
-    with data.open("rb") as source:
-        digest = hashlib.file_digest(source, "sha256").hexdigest()
-    print(f"DuckDB {duckdb.__version__} | {row_count:,} rows | same persistent database", flush=True)
-    modes = {"normal": args.normal_memory, "spill": args.spill_memory, "oom": args.oom_memory}
-    cases = []
-    for mode, budget in modes.items():
-        if args.mode not in ("all", mode):
-            continue
-        for topology, label in TOPOLOGIES.items():
-            if args.topology not in ("all", topology):
-                continue
-            cell = root / f"{mode}-{topology}"
-            cell.mkdir()
-            expected_rows = row_count if args.query.resolve() == Path(__file__).with_name("experiment.sql").resolve() else None
-            plan = {"database": str(database), "expected_rows": expected_rows, "query": query,
-                    "topology": topology, "mode": mode, "memory_limit": budget,
-                    "requests": args.requests, "threads": args.threads,
-                    "max_temp_size": args.max_temp_size}
-            plan_path = cell / "plan.json"
-            plan_path.write_text(json.dumps(plan, indent=2), encoding="utf-8")
-            print(f"\n{mode.upper()} | {label} | memory_limit={budget}", flush=True)
-            # A fresh process prevents an earlier case's allocator state contaminating RSS.
-            subprocess.run([sys.executable, str(Path(__file__).resolve()), "--worker", str(plan_path)],
-                           check=True, timeout=600)
-            cases.append(json.loads((cell / "result.json").read_text(encoding="utf-8")))
-    report = {
-        "duckdb_version": duckdb.__version__, "python_version": platform.python_version(),
-        "platform": platform.platform(), "created_at": datetime.now(timezone.utc).isoformat(),
-        "source_url": SOURCE_URL, "source_page": SOURCE_PAGE, "data_sha256": digest,
-        "data_bytes": data.stat().st_size, "row_count": row_count, "query": query,
-        "common_settings": {"threads": args.threads, "max_temp_directory_size": args.max_temp_size,
-                            "preserve_insertion_order": False, "requests": args.requests},
-        "cases": cases,
-    }
-    (root / "results.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
-    destination = root / "report.html"
-    write_report(report, destination)
-    print(f"\nReport: {destination}\nRaw results: {root / 'results.json'}", flush=True)
-    return 0
+    counts = {status: sum(r["status"] == status for r in requests)
+              for status in ("ok", "duckdb_oom", "query_error")}
+    spill = "unavailable" if spill_peak is None else f"{spill_peak / 1048576:.1f}MiB"
+    buffer = "unavailable" if buffer_peak is None else f"{buffer_peak / 1048576:.1f}MiB"
+    print(f"Summary: {counts} batch={result['batch_ms']:.1f}ms "
+          f"rss_peak={peak_rss / 1048576:.1f}MiB engine_buffer_peak={buffer} "
+          f"engine_spill_peak={spill} engine_usable={result['engine_usable']}", flush=True)
+    return result
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    cases = {"case1": case_1, "case2": case_2, "case3": case_3}
+    parser = argparse.ArgumentParser(description="Three simultaneous DuckDB requests, one case per process.")
+    parser.add_argument("case", choices=cases)
+    parser.add_argument("scenario", choices=MEMORY_LIMITS)
+    args = parser.parse_args()
+    sql = Path(__file__).with_name("experiment.sql").read_text(encoding="utf-8")
+    print(f"DuckDB {duckdb.__version__} | {args.case} | {args.scenario}", flush=True)
+    result = cases[args.case](sql, MEMORY_LIMITS[args.scenario])
+    statuses = [request["status"] for request in result["requests"]]
+    spill = result["engine_peak_spill_bytes"]
+    if args.scenario == "oom":
+        expected = statuses == ["duckdb_oom"] * 3
+    else:
+        expected = statuses == ["ok"] * 3 and spill is not None
+        expected = expected and (spill == 0 if args.scenario == "normal" else spill > 0)
+    if not expected or not result["engine_usable"]:
+        print("Observed outcomes did not meet this scenario's expectation; limits were not changed.", flush=True)
+        raise SystemExit(1)
