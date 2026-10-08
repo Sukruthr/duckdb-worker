@@ -1,6 +1,43 @@
 # Small DuckDB worker
 
-One Python script, one dependency, one query per process. The worker applies explicit DuckDB settings and exports the query directly to Parquet. It is an example to adapt to your workload; it does not require a server, pandas, or a task queue.
+The worker applies explicit DuckDB settings and exports one query per process directly to Parquet. It is an example to adapt to your workload; it does not require a server, pandas, or a task queue. The separate concurrency experiment adds psutil for process-memory measurements.
+
+## Connection/cursor experiment
+
+```sh
+uv sync --locked
+uv run --locked experiment.py
+```
+
+This downloads the [official NYC TLC January 2025 yellow taxi Parquet](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page) once and runs **27 real requests**: three simultaneous requests for each of three topologies, in each of three memory modes.
+
+| Topology | Query cursors | Request behavior |
+| --- | --- | --- |
+| 1 connection, 1 cursor | 1 | Requests queue behind one cursor lock. |
+| 2 connections, 1 cursor each | 2 | Two requests can overlap; the third waits for a cursor. |
+| 1 connection, 2 cursors | 2 | Two requests can overlap; the third waits for a cursor. |
+
+Both connections open **the same database file**. All three cases therefore share one DuckDB engine budget within their process. `cursor()` creates an independent session, not a separate engine. A lock covers each cursor's entire request so results cannot be overwritten by another thread. [Python API](https://duckdb.org/docs/current/clients/python/overview#about-cursor), [instance-cache implementation](https://github.com/duckdb/duckdb-python/blob/v1.5.6/src/duckdb_py/pyconnection.cpp#L2200).
+
+The same full-sort SQL in `experiment.sql` and the same local input are used throughout. Only `memory_limit` changes between modes: normal `1GB`, spill `256MB`, OOM `1MB`. Within each mode the settings are identical across topologies: `threads=1`, `preserve_insertion_order=false`, a `2GB` spill cap, and identical Parquet export settings. Spill remains enabled even in OOM mode. These budgets are experiment inputs, not production recommendations; the report shows actual outcomes rather than assuming them.
+
+Watch START/completion/error events in the terminal. Open the printed **report.html** path to compare every request's queue and query latency, overlap timeline, RSS history, spill evidence, and full errors. `results.json` and successful query profiles are saved beside it. Large query outputs and spill scratch are removed after validating row counts. Input data is cached in `work/experiment/`; each run has its own directory.
+
+```sh
+uv run --locked experiment.py --topology case3 --mode spill
+uv run --locked experiment.py --mode spill --spill-memory 64MB
+uv run --locked experiment.py --mode spill --spill-memory 128MB
+uv run --locked experiment.py --query my-query.sql
+uv run --locked python -m unittest -v test_run test_experiment
+```
+
+Your query file must contain one trusted SELECT using the `trips` view. Requests call DuckDB directly from Python threads, not through HTTP, with round-robin cursor assignment. Each topology/mode runs in a fresh subprocess; download and connection setup are outside request latency. Query time includes profiling setup and Parquet export; post-export row-count validation is outside query time but still holds the cursor lock. There is no retry. Three requests are a small demonstration, not a statistical benchmark; OS file caching and case order can affect timings.
+
+RSS is sampled every 50 ms and may miss brief peaks. Profile buffer/spill peaks describe the **shared engine**, not memory attributable to an individual request; they are not summed. Disk spill is established by positive profile temporary-storage usage, with filesystem sampling as additional evidence. [Profiling metrics](https://duckdb.org/docs/current/dev/metrics).
+
+The OOM case catches an actual DuckDB `OutOfMemoryException`, then checks each cursor still answers `SELECT 42`. It deliberately does **not** trigger a Windows/Linux kernel kill or Kubernetes `OOMKilled`. `memory_limit` is not a process RSS ceiling. [OOM guidance](https://duckdb.org/docs/current/guides/performance/oom).
+
+Downloaded data and machine-specific results stay in ignored `work/`, not Git.
 
 ## Run locally
 
