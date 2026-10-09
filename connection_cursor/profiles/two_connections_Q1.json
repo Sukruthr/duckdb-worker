@@ -1,0 +1,259 @@
+{
+  "cumulative_cardinality": 47433987,
+  "attach_load_storage_latency": 0.0,
+  "attach_replay_wal_latency": 0.0,
+  "blocked_thread_time": 0.0,
+  "checkpoint_latency": 0.0,
+  "cumulative_rows_scanned": 2964627,
+  "commit_local_storage_latency": 0.0,
+  "cpu_time": 787.0544350999995,
+  "extra_info": {},
+  "latency": 203.6966644,
+  "query_name": "EXPLAIN (ANALYZE, FORMAT JSON) \n        SELECT t.*, r.copy_id,\n               sha256(repeat(concat_ws('|',\n                   CAST(t.tpep_pickup_datetime AS VARCHAR),\n                   CAST(t.tpep_dropoff_datetime AS VARCHAR),\n                   CAST(t.total_amount AS VARCHAR),\n                   CAST(r.copy_id AS VARCHAR)), 190)) AS sort_key\n        FROM trips AS t\n        CROSS JOIN range(3) AS r(copy_id)\n        ORDER BY sort_key, r.copy_id\n    ",
+  "result_set_size": 0,
+  "rows_returned": 0,
+  "system_peak_buffer_memory": 1024225280,
+  "system_peak_temp_dir_size": 1546780672,
+  "total_bytes_read": 39845888,
+  "total_bytes_written": 0,
+  "total_memory_allocated": 3845390336,
+  "waiting_to_attach_latency": 0.0,
+  "wal_replay_entry_count": 0,
+  "write_to_wal_latency": 0.0,
+  "children": [
+    {
+      "cumulative_cardinality": 47433987,
+      "cumulative_rows_scanned": 2964627,
+      "cpu_time": 787.0544350999995,
+      "extra_info": {},
+      "operator_cardinality": 0,
+      "operator_name": "EXPLAIN_ANALYZE",
+      "operator_rows_scanned": 0,
+      "operator_timing": 0.0007840000000000113,
+      "operator_type": "EXPLAIN_ANALYZE",
+      "result_set_size": 0,
+      "system_peak_buffer_memory": 0,
+      "system_peak_temp_dir_size": 0,
+      "children": [
+        {
+          "cumulative_cardinality": 47433987,
+          "cumulative_rows_scanned": 2964627,
+          "cpu_time": 787.0536510999996,
+          "extra_info": {
+            "Projections": [
+              "__internal_decompress_integral_integer(#0, 1)",
+              "#1",
+              "#2",
+              "__internal_decompress_integral_bigint(#3, 0)",
+              "#4",
+              "__internal_decompress_integral_bigint(#5, 1)",
+              "__internal_decompress_string(#6)",
+              "__internal_decompress_integral_integer(#7, 1)",
+              "__internal_decompress_integral_integer(#8, 1)",
+              "__internal_decompress_integral_bigint(#9, 0)",
+              "#10",
+              "#11",
+              "#12",
+              "#13",
+              "#14",
+              "#15",
+              "#16",
+              "#17",
+              "#18",
+              "#19",
+              "#20"
+            ],
+            "Estimated Cardinality": "0"
+          },
+          "operator_cardinality": 8893872,
+          "operator_name": "PROJECTION",
+          "operator_rows_scanned": 0,
+          "operator_timing": 0.17293480000000017,
+          "operator_type": "PROJECTION",
+          "result_set_size": 1529745984,
+          "system_peak_buffer_memory": 0,
+          "system_peak_temp_dir_size": 0,
+          "children": [
+            {
+              "cumulative_cardinality": 38540115,
+              "cumulative_rows_scanned": 2964627,
+              "cpu_time": 786.8807162999996,
+              "extra_info": {
+                "Order By": [
+                  "sha256(repeat(concat_ws('|', CAST(t.tpep_pickup_datetime AS VARCHAR), CAST(t.tpep_dropoff_datetime AS VARCHAR), CAST(t.total_amount AS VARCHAR), CAST(r.copy_id AS VARCHAR)), 190)) ASC",
+                  "r.copy_id ASC"
+                ]
+              },
+              "operator_cardinality": 8893872,
+              "operator_name": "ORDER_BY",
+              "operator_rows_scanned": 0,
+              "operator_timing": 23.11683040000002,
+              "operator_type": "ORDER_BY",
+              "result_set_size": 1147309488,
+              "system_peak_buffer_memory": 0,
+              "system_peak_temp_dir_size": 0,
+              "children": [
+                {
+                  "cumulative_cardinality": 29646243,
+                  "cumulative_rows_scanned": 2964627,
+                  "cpu_time": 763.7638858999995,
+                  "extra_info": {
+                    "Projections": [
+                      "__internal_compress_integral_utinyint(#0, 1)",
+                      "#1",
+                      "#2",
+                      "__internal_compress_integral_utinyint(#3, 0)",
+                      "#4",
+                      "__internal_compress_integral_utinyint(#5, 1)",
+                      "__internal_compress_string_utinyint(#6)",
+                      "__internal_compress_integral_usmallint(#7, 1)",
+                      "__internal_compress_integral_usmallint(#8, 1)",
+                      "__internal_compress_integral_utinyint(#9, 0)",
+                      "#10",
+                      "#11",
+                      "#12",
+                      "#13",
+                      "#14",
+                      "#15",
+                      "#16",
+                      "#17",
+                      "#18",
+                      "#19",
+                      "#20"
+                    ],
+                    "Estimated Cardinality": "8893872"
+                  },
+                  "operator_cardinality": 8893872,
+                  "operator_name": "PROJECTION",
+                  "operator_rows_scanned": 0,
+                  "operator_timing": 0.20563029999999993,
+                  "operator_type": "PROJECTION",
+                  "result_set_size": 1147309488,
+                  "system_peak_buffer_memory": 0,
+                  "system_peak_temp_dir_size": 0,
+                  "children": [
+                    {
+                      "cumulative_cardinality": 20752371,
+                      "cumulative_rows_scanned": 2964627,
+                      "cpu_time": 763.5582555999995,
+                      "extra_info": {
+                        "Projections": [
+                          "VendorID",
+                          "tpep_pickup_datetime",
+                          "tpep_dropoff_datetime",
+                          "passenger_count",
+                          "trip_distance",
+                          "RatecodeID",
+                          "store_and_fwd_flag",
+                          "PULocationID",
+                          "DOLocationID",
+                          "payment_type",
+                          "fare_amount",
+                          "extra",
+                          "mta_tax",
+                          "tip_amount",
+                          "tolls_amount",
+                          "improvement_surcharge",
+                          "total_amount",
+                          "congestion_surcharge",
+                          "Airport_fee",
+                          "copy_id",
+                          "sort_key"
+                        ],
+                        "Estimated Cardinality": "8893872"
+                      },
+                      "operator_cardinality": 8893872,
+                      "operator_name": "PROJECTION",
+                      "operator_rows_scanned": 0,
+                      "operator_timing": 763.2328976999995,
+                      "operator_type": "PROJECTION",
+                      "result_set_size": 1529745984,
+                      "system_peak_buffer_memory": 0,
+                      "system_peak_temp_dir_size": 0,
+                      "children": [
+                        {
+                          "cumulative_cardinality": 11858499,
+                          "cumulative_rows_scanned": 2964627,
+                          "cpu_time": 0.3253579,
+                          "extra_info": {},
+                          "operator_cardinality": 8893872,
+                          "operator_name": "CROSS_PRODUCT",
+                          "operator_rows_scanned": 0,
+                          "operator_timing": 0.03433639999999996,
+                          "operator_type": "CROSS_PRODUCT",
+                          "result_set_size": 1387444032,
+                          "system_peak_buffer_memory": 0,
+                          "system_peak_temp_dir_size": 0,
+                          "children": [
+                            {
+                              "cumulative_cardinality": 2964624,
+                              "cumulative_rows_scanned": 2964624,
+                              "cpu_time": 0.29101180000000004,
+                              "extra_info": {
+                                "Table": "taxi.main.trips",
+                                "Type": "Sequential Scan",
+                                "Projections": [
+                                  "VendorID",
+                                  "tpep_pickup_datetime",
+                                  "tpep_dropoff_datetime",
+                                  "passenger_count",
+                                  "trip_distance",
+                                  "RatecodeID",
+                                  "store_and_fwd_flag",
+                                  "PULocationID",
+                                  "DOLocationID",
+                                  "payment_type",
+                                  "fare_amount",
+                                  "extra",
+                                  "mta_tax",
+                                  "tip_amount",
+                                  "tolls_amount",
+                                  "improvement_surcharge",
+                                  "total_amount",
+                                  "congestion_surcharge",
+                                  "Airport_fee"
+                                ],
+                                "Estimated Cardinality": "2964624"
+                              },
+                              "operator_cardinality": 2964624,
+                              "operator_name": "SEQ_SCAN",
+                              "operator_rows_scanned": 2964624,
+                              "operator_timing": 0.29101180000000004,
+                              "operator_type": "TABLE_SCAN",
+                              "result_set_size": 438764352,
+                              "system_peak_buffer_memory": 0,
+                              "system_peak_temp_dir_size": 0,
+                              "children": []
+                            },
+                            {
+                              "cumulative_cardinality": 3,
+                              "cumulative_rows_scanned": 3,
+                              "cpu_time": 9.7e-06,
+                              "extra_info": {
+                                "Function": "RANGE",
+                                "Estimated Cardinality": "3"
+                              },
+                              "operator_cardinality": 3,
+                              "operator_name": "RANGE",
+                              "operator_rows_scanned": 3,
+                              "operator_timing": 9.7e-06,
+                              "operator_type": "TABLE_SCAN",
+                              "result_set_size": 24,
+                              "system_peak_buffer_memory": 0,
+                              "system_peak_temp_dir_size": 0,
+                              "children": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

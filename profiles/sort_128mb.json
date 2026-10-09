@@ -1,0 +1,180 @@
+{
+  "cumulative_cardinality": 11858496,
+  "attach_load_storage_latency": 0.0,
+  "attach_replay_wal_latency": 0.0,
+  "blocked_thread_time": 0.0,
+  "checkpoint_latency": 0.0,
+  "cumulative_rows_scanned": 2964624,
+  "commit_local_storage_latency": 0.0,
+  "cpu_time": 1.905346400000002,
+  "extra_info": {},
+  "latency": 2.0478246,
+  "query_name": "EXPLAIN (ANALYZE, FORMAT JSON) \n        SELECT * FROM trips\n        ORDER BY total_amount DESC, tpep_pickup_datetime\n    ",
+  "result_set_size": 0,
+  "rows_returned": 0,
+  "system_peak_buffer_memory": 221622272,
+  "system_peak_temp_dir_size": 164626432,
+  "total_bytes_read": 42205184,
+  "total_bytes_written": 0,
+  "total_memory_allocated": 641466368,
+  "waiting_to_attach_latency": 0.0,
+  "wal_replay_entry_count": 0,
+  "write_to_wal_latency": 0.0,
+  "children": [
+    {
+      "cumulative_cardinality": 11858496,
+      "cumulative_rows_scanned": 2964624,
+      "cpu_time": 1.905346400000002,
+      "extra_info": {},
+      "operator_cardinality": 0,
+      "operator_name": "EXPLAIN_ANALYZE",
+      "operator_rows_scanned": 0,
+      "operator_timing": 9.260000000000122e-05,
+      "operator_type": "EXPLAIN_ANALYZE",
+      "result_set_size": 0,
+      "system_peak_buffer_memory": 0,
+      "system_peak_temp_dir_size": 0,
+      "children": [
+        {
+          "cumulative_cardinality": 11858496,
+          "cumulative_rows_scanned": 2964624,
+          "cpu_time": 1.9052538000000019,
+          "extra_info": {
+            "Projections": [
+              "__internal_decompress_integral_integer(#0, 1)",
+              "#1",
+              "#2",
+              "__internal_decompress_integral_bigint(#3, 0)",
+              "#4",
+              "__internal_decompress_integral_bigint(#5, 1)",
+              "__internal_decompress_string(#6)",
+              "__internal_decompress_integral_integer(#7, 1)",
+              "__internal_decompress_integral_integer(#8, 1)",
+              "__internal_decompress_integral_bigint(#9, 0)",
+              "#10",
+              "#11",
+              "#12",
+              "#13",
+              "#14",
+              "#15",
+              "#16",
+              "#17",
+              "#18"
+            ],
+            "Estimated Cardinality": "0"
+          },
+          "operator_cardinality": 2964624,
+          "operator_name": "PROJECTION",
+          "operator_rows_scanned": 0,
+          "operator_timing": 0.02949069999999994,
+          "operator_type": "PROJECTION",
+          "result_set_size": 438764352,
+          "system_peak_buffer_memory": 0,
+          "system_peak_temp_dir_size": 0,
+          "children": [
+            {
+              "cumulative_cardinality": 8893872,
+              "cumulative_rows_scanned": 2964624,
+              "cpu_time": 1.875763100000002,
+              "extra_info": {
+                "Order By": [
+                  "taxi.main.trips.total_amount DESC",
+                  "taxi.main.trips.tpep_pickup_datetime ASC"
+                ]
+              },
+              "operator_cardinality": 2964624,
+              "operator_name": "ORDER_BY",
+              "operator_rows_scanned": 0,
+              "operator_timing": 1.736251600000002,
+              "operator_type": "ORDER_BY",
+              "result_set_size": 311285520,
+              "system_peak_buffer_memory": 0,
+              "system_peak_temp_dir_size": 0,
+              "children": [
+                {
+                  "cumulative_cardinality": 5929248,
+                  "cumulative_rows_scanned": 2964624,
+                  "cpu_time": 0.1395115,
+                  "extra_info": {
+                    "Projections": [
+                      "__internal_compress_integral_utinyint(#0, 1)",
+                      "#1",
+                      "#2",
+                      "__internal_compress_integral_utinyint(#3, 0)",
+                      "#4",
+                      "__internal_compress_integral_utinyint(#5, 1)",
+                      "__internal_compress_string_utinyint(#6)",
+                      "__internal_compress_integral_usmallint(#7, 1)",
+                      "__internal_compress_integral_usmallint(#8, 1)",
+                      "__internal_compress_integral_utinyint(#9, 0)",
+                      "#10",
+                      "#11",
+                      "#12",
+                      "#13",
+                      "#14",
+                      "#15",
+                      "#16",
+                      "#17",
+                      "#18"
+                    ],
+                    "Estimated Cardinality": "2964624"
+                  },
+                  "operator_cardinality": 2964624,
+                  "operator_name": "PROJECTION",
+                  "operator_rows_scanned": 0,
+                  "operator_timing": 0.013644899999999922,
+                  "operator_type": "PROJECTION",
+                  "result_set_size": 311285520,
+                  "system_peak_buffer_memory": 0,
+                  "system_peak_temp_dir_size": 0,
+                  "children": [
+                    {
+                      "cumulative_cardinality": 2964624,
+                      "cumulative_rows_scanned": 2964624,
+                      "cpu_time": 0.12586660000000008,
+                      "extra_info": {
+                        "Table": "taxi.main.trips",
+                        "Type": "Sequential Scan",
+                        "Projections": [
+                          "VendorID",
+                          "tpep_pickup_datetime",
+                          "tpep_dropoff_datetime",
+                          "passenger_count",
+                          "trip_distance",
+                          "RatecodeID",
+                          "store_and_fwd_flag",
+                          "PULocationID",
+                          "DOLocationID",
+                          "payment_type",
+                          "fare_amount",
+                          "extra",
+                          "mta_tax",
+                          "tip_amount",
+                          "tolls_amount",
+                          "improvement_surcharge",
+                          "total_amount",
+                          "congestion_surcharge",
+                          "Airport_fee"
+                        ],
+                        "Estimated Cardinality": "2964624"
+                      },
+                      "operator_cardinality": 2964624,
+                      "operator_name": "SEQ_SCAN",
+                      "operator_rows_scanned": 2964624,
+                      "operator_timing": 0.12586660000000008,
+                      "operator_type": "TABLE_SCAN",
+                      "result_set_size": 438764352,
+                      "system_peak_buffer_memory": 0,
+                      "system_peak_temp_dir_size": 0,
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "cumulative_cardinality": 5929249,
+  "attach_load_storage_latency": 0.0,
+  "attach_replay_wal_latency": 0.0,
+  "blocked_thread_time": 0.0,
+  "checkpoint_latency": 0.0,
+  "cumulative_rows_scanned": 2964624,
+  "commit_local_storage_latency": 0.0,
+  "cpu_time": 0.012188099999999978,
+  "extra_info": {},
+  "latency": 0.0141225,
+  "query_name": "EXPLAIN (ANALYZE, FORMAT JSON) SELECT count(*) AS trips, sum(trip_distance) AS miles FROM trips",
+  "result_set_size": 0,
+  "rows_returned": 0,
+  "system_peak_buffer_memory": 12484608,
+  "system_peak_temp_dir_size": 0,
+  "total_bytes_read": 0,
+  "total_bytes_written": 0,
+  "total_memory_allocated": 0,
+  "waiting_to_attach_latency": 0.0,
+  "wal_replay_entry_count": 0,
+  "write_to_wal_latency": 0.0,
+  "children": [
+    {
+      "cumulative_cardinality": 5929249,
+      "cumulative_rows_scanned": 2964624,
+      "cpu_time": 0.012188099999999978,
+      "extra_info": {},
+      "operator_cardinality": 0,
+      "operator_name": "EXPLAIN_ANALYZE",
+      "operator_rows_scanned": 0,
+      "operator_timing": 2e-07,
+      "operator_type": "EXPLAIN_ANALYZE",
+      "result_set_size": 0,
+      "system_peak_buffer_memory": 0,
+      "system_peak_temp_dir_size": 0,
+      "children": [
+        {
+          "cumulative_cardinality": 5929249,
+          "cumulative_rows_scanned": 2964624,
+          "cpu_time": 0.012187899999999977,
+          "extra_info": {
+            "Aggregates": [
+              "count_star()",
+              "sum(#0)"
+            ]
+          },
+          "operator_cardinality": 1,
+          "operator_name": "UNGROUPED_AGGREGATE",
+          "operator_rows_scanned": 0,
+          "operator_timing": 0.0034353999999999552,
+          "operator_type": "UNGROUPED_AGGREGATE",
+          "result_set_size": 16,
+          "system_peak_buffer_memory": 0,
+          "system_peak_temp_dir_size": 0,
+          "children": [
+            {
+              "cumulative_cardinality": 5929248,
+              "cumulative_rows_scanned": 2964624,
+              "cpu_time": 0.008752500000000022,
+              "extra_info": {
+                "Projections": "trip_distance",
+                "Estimated Cardinality": "2964624"
+              },
+              "operator_cardinality": 2964624,
+              "operator_name": "PROJECTION",
+              "operator_rows_scanned": 0,
+              "operator_timing": 0.000166400000000003,
+              "operator_type": "PROJECTION",
+              "result_set_size": 23716992,
+              "system_peak_buffer_memory": 0,
+              "system_peak_temp_dir_size": 0,
+              "children": [
+                {
+                  "cumulative_cardinality": 2964624,
+                  "cumulative_rows_scanned": 2964624,
+                  "cpu_time": 0.00858610000000002,
+                  "extra_info": {
+                    "Table": "taxi.main.trips",
+                    "Type": "Sequential Scan",
+                    "Projections": "trip_distance",
+                    "Estimated Cardinality": "2964624"
+                  },
+                  "operator_cardinality": 2964624,
+                  "operator_name": "SEQ_SCAN",
+                  "operator_rows_scanned": 2964624,
+                  "operator_timing": 0.00858610000000002,
+                  "operator_type": "TABLE_SCAN",
+                  "result_set_size": 23716992,
+                  "system_peak_buffer_memory": 0,
+                  "system_peak_temp_dir_size": 0,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1163 @@
+{
+  "created_at": "2026-10-09T11:51:45.715467+00:00",
+  "mode": "full",
+  "status": "VALIDATED",
+  "psutil_version": "7.2.2",
+  "delay_seconds": 10.0,
+  "sample_seconds": 1.0,
+  "target_seconds": 180.0,
+  "validation": [
+    {
+      "check": "Baseline and all three comparison cases ran",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "Identical SQL scale across comparison cases",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1: pinned DuckDB and source rows",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1: shared settings verified on every handle",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1: worker completed without unexpected error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1: all query outcomes recorded",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1: process samples captured",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_1/Q1: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "calibration_2: pinned DuckDB and source rows",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_2: shared settings verified on every handle",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_2: worker completed without unexpected error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_2: all query outcomes recorded",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_2: process samples captured",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "calibration_2/Q1: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "one_cursor: pinned DuckDB and source rows",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "one_cursor: shared settings verified on every handle",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "one_cursor: worker completed without unexpected error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "one_cursor: all query outcomes recorded",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "one_cursor: process samples captured",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "one_cursor/Q1: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "one_cursor/Q2: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "one_cursor: Q2 submission delay",
+      "passed": true,
+      "detail": "requested=10.0s, observed=10.01228930009529s"
+    },
+    {
+      "check": "one_cursor: shared cursor serialized",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections: pinned DuckDB and source rows",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections: shared settings verified on every handle",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections: worker completed without unexpected error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections: all query outcomes recorded",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections: process samples captured",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_connections/Q1: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "two_connections/Q2: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "two_connections: Q2 submission delay",
+      "passed": true,
+      "detail": "requested=10.0s, observed=10.014462899882346s"
+    },
+    {
+      "check": "two_connections: separate cursors attempted overlap",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors: pinned DuckDB and source rows",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors: shared settings verified on every handle",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors: worker completed without unexpected error",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors: all query outcomes recorded",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors: process samples captured",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "two_cursors/Q1: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "two_cursors/Q2: complete ORDER_BY",
+      "passed": true,
+      "detail": "8893872 rows"
+    },
+    {
+      "check": "two_cursors: Q2 submission delay",
+      "passed": true,
+      "detail": "requested=10.0s, observed=10.011799100087956s"
+    },
+    {
+      "check": "two_cursors: separate cursors attempted overlap",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "Accepted baseline succeeded with measurable profile spill",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "Accepted baseline is 150-210 seconds",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "check": "CSV matches event-derived samples used by JSON summaries and HTML",
+      "passed": true,
+      "detail": "1342 samples"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "calibration_1",
+      "case_key": "baseline",
+      "hash_repeats": 256,
+      "metadata": {
+        "version": "1.5.6",
+        "source_rows": 2964624,
+        "settings_verified": true,
+        "settings_by_handle": {
+          "parent_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+          },
+          "cursor_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+          }
+        },
+        "requested_settings": {
+          "threads": 4,
+          "memory_limit": "512MB",
+          "max_temp_directory_size": "10GB",
+          "preserve_insertion_order": false,
+          "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+        },
+        "topology": {
+          "case_key": "baseline",
+          "label": "Baseline: Q1 alone",
+          "parent_connections": 1,
+          "cursors": 1,
+          "native_contexts": 2
+        }
+      },
+      "queries": [
+        {
+          "query": "Q1",
+          "submitted_at": 1506353.2779107,
+          "started_at": 1506353.2783158,
+          "finished_at": 1506595.6134154,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1171128320,
+          "profile_file": "profiles/calibration_1_Q1.json"
+        }
+      ],
+      "events": [
+        {
+          "event": "ready",
+          "time": 1506350.2669442,
+          "metadata": {
+            "version": "1.5.6",
+            "source_rows": 2964624,
+            "settings_verified": true,
+            "settings_by_handle": {
+              "parent_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+              },
+              "cursor_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+              }
+            },
+            "requested_settings": {
+              "threads": 4,
+              "memory_limit": "512MB",
+              "max_temp_directory_size": "10GB",
+              "preserve_insertion_order": false,
+              "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_1_ysimmr0c"
+            },
+            "topology": {
+              "case_key": "baseline",
+              "label": "Baseline: Q1 alone",
+              "parent_connections": 1,
+              "cursors": 1,
+              "native_contexts": 2
+            }
+          }
+        },
+        {
+          "event": "query_submitted",
+          "time": 1506353.2779107,
+          "query": "Q1",
+          "submitted_at": 1506353.2779107
+        },
+        {
+          "event": "query_started",
+          "time": 1506353.2783158,
+          "query": "Q1",
+          "started_at": 1506353.2783158
+        },
+        {
+          "event": "query_finished",
+          "time": 1506595.6134154,
+          "query": "Q1",
+          "result": {
+            "query": "Q1",
+            "submitted_at": 1506353.2779107,
+            "started_at": 1506353.2783158,
+            "finished_at": 1506595.6134154,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1171128320,
+            "profile_file": "profiles/calibration_1_Q1.json"
+          }
+        },
+        {
+          "event": "case_finished",
+          "time": 1506600.6644892,
+          "case_key": "baseline",
+          "cancelled": false,
+          "query_count": 1,
+          "query_statuses": {
+            "Q1": "SUCCESS"
+          }
+        }
+      ],
+      "error": null,
+      "stop_reason": null,
+      "forced_stop": false,
+      "pid": 37872,
+      "exit_code": 0,
+      "observed_until": 1506601.1155266,
+      "spill_cleaned": true,
+      "summary": {
+        "outcome": "SUCCESS",
+        "workload_seconds": 242.33509960002266,
+        "sample_count": 233,
+        "workload_sample_count": 224,
+        "peak_sampled_rss_bytes": 670511104,
+        "peak_os_threads": 22,
+        "average_cpu_cores": 3.8358771755285996,
+        "peak_sampled_spill_file_bytes": 1176993792
+      }
+    },
+    {
+      "run_id": "calibration_2",
+      "case_key": "baseline",
+      "hash_repeats": 190,
+      "metadata": {
+        "version": "1.5.6",
+        "source_rows": 2964624,
+        "settings_verified": true,
+        "settings_by_handle": {
+          "parent_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+          },
+          "cursor_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+          }
+        },
+        "requested_settings": {
+          "threads": 4,
+          "memory_limit": "512MB",
+          "max_temp_directory_size": "10GB",
+          "preserve_insertion_order": false,
+          "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+        },
+        "topology": {
+          "case_key": "baseline",
+          "label": "Baseline: Q1 alone",
+          "parent_connections": 1,
+          "cursors": 1,
+          "native_contexts": 2
+        }
+      },
+      "queries": [
+        {
+          "query": "Q1",
+          "submitted_at": 1506604.4614207,
+          "started_at": 1506604.4620525,
+          "finished_at": 1506785.6716273,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1177223168,
+          "profile_file": "profiles/calibration_2_Q1.json"
+        }
+      ],
+      "events": [
+        {
+          "event": "ready",
+          "time": 1506601.453473,
+          "metadata": {
+            "version": "1.5.6",
+            "source_rows": 2964624,
+            "settings_verified": true,
+            "settings_by_handle": {
+              "parent_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+              },
+              "cursor_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+              }
+            },
+            "requested_settings": {
+              "threads": 4,
+              "memory_limit": "512MB",
+              "max_temp_directory_size": "10GB",
+              "preserve_insertion_order": false,
+              "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/calibration_2_1nrsyvwd"
+            },
+            "topology": {
+              "case_key": "baseline",
+              "label": "Baseline: Q1 alone",
+              "parent_connections": 1,
+              "cursors": 1,
+              "native_contexts": 2
+            }
+          }
+        },
+        {
+          "event": "query_submitted",
+          "time": 1506604.4614207,
+          "query": "Q1",
+          "submitted_at": 1506604.4614207
+        },
+        {
+          "event": "query_started",
+          "time": 1506604.4620525,
+          "query": "Q1",
+          "started_at": 1506604.4620525
+        },
+        {
+          "event": "query_finished",
+          "time": 1506785.6716273,
+          "query": "Q1",
+          "result": {
+            "query": "Q1",
+            "submitted_at": 1506604.4614207,
+            "started_at": 1506604.4620525,
+            "finished_at": 1506785.6716273,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1177223168,
+            "profile_file": "profiles/calibration_2_Q1.json"
+          }
+        },
+        {
+          "event": "case_finished",
+          "time": 1506790.7031427,
+          "case_key": "baseline",
+          "cancelled": false,
+          "query_count": 1,
+          "query_statuses": {
+            "Q1": "SUCCESS"
+          }
+        }
+      ],
+      "error": null,
+      "stop_reason": null,
+      "forced_stop": false,
+      "pid": 24668,
+      "exit_code": 0,
+      "observed_until": 1506791.1343199,
+      "spill_cleaned": true,
+      "summary": {
+        "outcome": "SUCCESS",
+        "workload_seconds": 181.2095747999847,
+        "sample_count": 176,
+        "workload_sample_count": 168,
+        "peak_sampled_rss_bytes": 645746688,
+        "peak_os_threads": 22,
+        "average_cpu_cores": 3.859371202846199,
+        "peak_sampled_spill_file_bytes": 1178501120
+      }
+    },
+    {
+      "run_id": "one_cursor",
+      "case_key": "one_cursor",
+      "hash_repeats": 190,
+      "metadata": {
+        "version": "1.5.6",
+        "source_rows": 2964624,
+        "settings_verified": true,
+        "settings_by_handle": {
+          "parent_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+          },
+          "cursor_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+          }
+        },
+        "requested_settings": {
+          "threads": 4,
+          "memory_limit": "512MB",
+          "max_temp_directory_size": "10GB",
+          "preserve_insertion_order": false,
+          "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+        },
+        "topology": {
+          "case_key": "one_cursor",
+          "label": "1 connection / 1 cursor",
+          "parent_connections": 1,
+          "cursors": 1,
+          "native_contexts": 2
+        }
+      },
+      "queries": [
+        {
+          "query": "Q1",
+          "submitted_at": 1506794.4607764,
+          "started_at": 1506794.4611624,
+          "finished_at": 1506976.3507851,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1170571264,
+          "profile_file": "profiles/one_cursor_Q1.json"
+        },
+        {
+          "query": "Q2",
+          "submitted_at": 1506804.4734517,
+          "started_at": 1506976.3510061,
+          "finished_at": 1507161.5883502,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1181089792,
+          "profile_file": "profiles/one_cursor_Q2.json"
+        }
+      ],
+      "events": [
+        {
+          "event": "ready",
+          "time": 1506791.4485492,
+          "metadata": {
+            "version": "1.5.6",
+            "source_rows": 2964624,
+            "settings_verified": true,
+            "settings_by_handle": {
+              "parent_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+              },
+              "cursor_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+              }
+            },
+            "requested_settings": {
+              "threads": 4,
+              "memory_limit": "512MB",
+              "max_temp_directory_size": "10GB",
+              "preserve_insertion_order": false,
+              "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/one_cursor_6mpr5wx5"
+            },
+            "topology": {
+              "case_key": "one_cursor",
+              "label": "1 connection / 1 cursor",
+              "parent_connections": 1,
+              "cursors": 1,
+              "native_contexts": 2
+            }
+          }
+        },
+        {
+          "event": "query_submitted",
+          "time": 1506794.4607764,
+          "query": "Q1",
+          "submitted_at": 1506794.4607764
+        },
+        {
+          "event": "query_started",
+          "time": 1506794.4611624,
+          "query": "Q1",
+          "started_at": 1506794.4611624
+        },
+        {
+          "event": "query_submitted",
+          "time": 1506804.4734517,
+          "query": "Q2",
+          "submitted_at": 1506804.4734517
+        },
+        {
+          "event": "query_finished",
+          "time": 1506976.3507851,
+          "query": "Q1",
+          "result": {
+            "query": "Q1",
+            "submitted_at": 1506794.4607764,
+            "started_at": 1506794.4611624,
+            "finished_at": 1506976.3507851,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1170571264,
+            "profile_file": "profiles/one_cursor_Q1.json"
+          }
+        },
+        {
+          "event": "query_started",
+          "time": 1506976.3510061,
+          "query": "Q2",
+          "started_at": 1506976.3510061
+        },
+        {
+          "event": "query_finished",
+          "time": 1507161.5883502,
+          "query": "Q2",
+          "result": {
+            "query": "Q2",
+            "submitted_at": 1506804.4734517,
+            "started_at": 1506976.3510061,
+            "finished_at": 1507161.5883502,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1181089792,
+            "profile_file": "profiles/one_cursor_Q2.json"
+          }
+        },
+        {
+          "event": "case_finished",
+          "time": 1507166.6247818,
+          "case_key": "one_cursor",
+          "cancelled": false,
+          "query_count": 2,
+          "query_statuses": {
+            "Q1": "SUCCESS",
+            "Q2": "SUCCESS"
+          }
+        }
+      ],
+      "error": null,
+      "stop_reason": null,
+      "forced_stop": false,
+      "pid": 10152,
+      "exit_code": 0,
+      "observed_until": 1507167.0773585,
+      "spill_cleaned": true,
+      "summary": {
+        "outcome": "SUCCESS",
+        "workload_seconds": 367.127187800128,
+        "sample_count": 349,
+        "workload_sample_count": 340,
+        "peak_sampled_rss_bytes": 650948608,
+        "peak_os_threads": 23,
+        "average_cpu_cores": 3.86341271195501,
+        "peak_sampled_spill_file_bytes": 1182662656
+      }
+    },
+    {
+      "run_id": "two_connections",
+      "case_key": "two_connections",
+      "hash_repeats": 190,
+      "metadata": {
+        "version": "1.5.6",
+        "source_rows": 2964624,
+        "settings_verified": true,
+        "settings_by_handle": {
+          "parent_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+          },
+          "parent_2": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+          },
+          "cursor_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+          },
+          "cursor_2": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+          }
+        },
+        "requested_settings": {
+          "threads": 4,
+          "memory_limit": "512MB",
+          "max_temp_directory_size": "10GB",
+          "preserve_insertion_order": false,
+          "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+        },
+        "topology": {
+          "case_key": "two_connections",
+          "label": "2 connections / 1 cursor each",
+          "parent_connections": 2,
+          "cursors": 2,
+          "native_contexts": 4
+        }
+      },
+      "queries": [
+        {
+          "query": "Q1",
+          "submitted_at": 1507170.4136527,
+          "started_at": 1507170.4140534,
+          "finished_at": 1507374.1113672,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1546780672,
+          "profile_file": "profiles/two_connections_Q1.json"
+        },
+        {
+          "query": "Q2",
+          "submitted_at": 1507180.4285163,
+          "started_at": 1507180.429748,
+          "finished_at": 1507521.2904216,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 2513338368,
+          "profile_file": "profiles/two_connections_Q2.json"
+        }
+      ],
+      "events": [
+        {
+          "event": "ready",
+          "time": 1507167.4005146,
+          "metadata": {
+            "version": "1.5.6",
+            "source_rows": 2964624,
+            "settings_verified": true,
+            "settings_by_handle": {
+              "parent_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+              },
+              "parent_2": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+              },
+              "cursor_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+              },
+              "cursor_2": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+              }
+            },
+            "requested_settings": {
+              "threads": 4,
+              "memory_limit": "512MB",
+              "max_temp_directory_size": "10GB",
+              "preserve_insertion_order": false,
+              "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_connections_wa65hk5n"
+            },
+            "topology": {
+              "case_key": "two_connections",
+              "label": "2 connections / 1 cursor each",
+              "parent_connections": 2,
+              "cursors": 2,
+              "native_contexts": 4
+            }
+          }
+        },
+        {
+          "event": "query_submitted",
+          "time": 1507170.4136527,
+          "query": "Q1",
+          "submitted_at": 1507170.4136527
+        },
+        {
+          "event": "query_started",
+          "time": 1507170.4140534,
+          "query": "Q1",
+          "started_at": 1507170.4140534
+        },
+        {
+          "event": "query_submitted",
+          "time": 1507180.4285163,
+          "query": "Q2",
+          "submitted_at": 1507180.4285163
+        },
+        {
+          "event": "query_started",
+          "time": 1507180.429748,
+          "query": "Q2",
+          "started_at": 1507180.429748
+        },
+        {
+          "event": "query_finished",
+          "time": 1507374.1113672,
+          "query": "Q1",
+          "result": {
+            "query": "Q1",
+            "submitted_at": 1507170.4136527,
+            "started_at": 1507170.4140534,
+            "finished_at": 1507374.1113672,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1546780672,
+            "profile_file": "profiles/two_connections_Q1.json"
+          }
+        },
+        {
+          "event": "query_finished",
+          "time": 1507521.2904216,
+          "query": "Q2",
+          "result": {
+            "query": "Q2",
+            "submitted_at": 1507180.4285163,
+            "started_at": 1507180.429748,
+            "finished_at": 1507521.2904216,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 2513338368,
+            "profile_file": "profiles/two_connections_Q2.json"
+          }
+        },
+        {
+          "event": "case_finished",
+          "time": 1507526.3237528,
+          "case_key": "two_connections",
+          "cancelled": false,
+          "query_count": 2,
+          "query_statuses": {
+            "Q1": "SUCCESS",
+            "Q2": "SUCCESS"
+          }
+        }
+      ],
+      "error": null,
+      "stop_reason": null,
+      "forced_stop": false,
+      "pid": 20800,
+      "exit_code": 0,
+      "observed_until": 1507526.8796115,
+      "spill_cleaned": true,
+      "summary": {
+        "outcome": "SUCCESS",
+        "workload_seconds": 350.87636819994077,
+        "sample_count": 334,
+        "workload_sample_count": 326,
+        "peak_sampled_rss_bytes": 670183424,
+        "peak_os_threads": 23,
+        "average_cpu_cores": 4.345148916864998,
+        "peak_sampled_spill_file_bytes": 2517270528
+      }
+    },
+    {
+      "run_id": "two_cursors",
+      "case_key": "two_cursors",
+      "hash_repeats": 190,
+      "metadata": {
+        "version": "1.5.6",
+        "source_rows": 2964624,
+        "settings_verified": true,
+        "settings_by_handle": {
+          "parent_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+          },
+          "cursor_1": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+          },
+          "cursor_2": {
+            "threads": 4,
+            "memory_limit": "488.2 MiB",
+            "max_temp_directory_size": "9.3 GiB",
+            "preserve_insertion_order": false,
+            "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+          }
+        },
+        "requested_settings": {
+          "threads": 4,
+          "memory_limit": "512MB",
+          "max_temp_directory_size": "10GB",
+          "preserve_insertion_order": false,
+          "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+        },
+        "topology": {
+          "case_key": "two_cursors",
+          "label": "1 connection / 2 cursors",
+          "parent_connections": 1,
+          "cursors": 2,
+          "native_contexts": 3
+        }
+      },
+      "queries": [
+        {
+          "query": "Q1",
+          "submitted_at": 1507530.1743653,
+          "started_at": 1507530.1746903,
+          "finished_at": 1507684.0407954,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 1541111808,
+          "profile_file": "profiles/two_cursors_Q1.json"
+        },
+        {
+          "query": "Q2",
+          "submitted_at": 1507540.1864894,
+          "started_at": 1507540.1869286,
+          "finished_at": 1507789.7839645,
+          "status": "SUCCESS",
+          "exception_type": null,
+          "error": null,
+          "sort_rows": 8893872,
+          "profile_spill_bytes": 2044067840,
+          "profile_file": "profiles/two_cursors_Q2.json"
+        }
+      ],
+      "events": [
+        {
+          "event": "ready",
+          "time": 1507527.1689366,
+          "metadata": {
+            "version": "1.5.6",
+            "source_rows": 2964624,
+            "settings_verified": true,
+            "settings_by_handle": {
+              "parent_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+              },
+              "cursor_1": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+              },
+              "cursor_2": {
+                "threads": 4,
+                "memory_limit": "488.2 MiB",
+                "max_temp_directory_size": "9.3 GiB",
+                "preserve_insertion_order": false,
+                "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+              }
+            },
+            "requested_settings": {
+              "threads": 4,
+              "memory_limit": "512MB",
+              "max_temp_directory_size": "10GB",
+              "preserve_insertion_order": false,
+              "temp_directory": "C:/Users/sukru/Documents/Codex/2026-10-08/i-x20/work/connection_cursor_spill/two_cursors_t679ay50"
+            },
+            "topology": {
+              "case_key": "two_cursors",
+              "label": "1 connection / 2 cursors",
+              "parent_connections": 1,
+              "cursors": 2,
+              "native_contexts": 3
+            }
+          }
+        },
+        {
+          "event": "query_submitted",
+          "time": 1507530.1743653,
+          "query": "Q1",
+          "submitted_at": 1507530.1743653
+        },
+        {
+          "event": "query_started",
+          "time": 1507530.1746903,
+          "query": "Q1",
+          "started_at": 1507530.1746903
+        },
+        {
+          "event": "query_submitted",
+          "time": 1507540.1864894,
+          "query": "Q2",
+          "submitted_at": 1507540.1864894
+        },
+        {
+          "event": "query_started",
+          "time": 1507540.1869286,
+          "query": "Q2",
+          "started_at": 1507540.1869286
+        },
+        {
+          "event": "query_finished",
+          "time": 1507684.0407954,
+          "query": "Q1",
+          "result": {
+            "query": "Q1",
+            "submitted_at": 1507530.1743653,
+            "started_at": 1507530.1746903,
+            "finished_at": 1507684.0407954,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 1541111808,
+            "profile_file": "profiles/two_cursors_Q1.json"
+          }
+        },
+        {
+          "event": "query_finished",
+          "time": 1507789.7839645,
+          "query": "Q2",
+          "result": {
+            "query": "Q2",
+            "submitted_at": 1507540.1864894,
+            "started_at": 1507540.1869286,
+            "finished_at": 1507789.7839645,
+            "status": "SUCCESS",
+            "exception_type": null,
+            "error": null,
+            "sort_rows": 8893872,
+            "profile_spill_bytes": 2044067840,
+            "profile_file": "profiles/two_cursors_Q2.json"
+          }
+        },
+        {
+          "event": "case_finished",
+          "time": 1507794.8107677,
+          "case_key": "two_cursors",
+          "cancelled": false,
+          "query_count": 2,
+          "query_statuses": {
+            "Q1": "SUCCESS",
+            "Q2": "SUCCESS"
+          }
+        }
+      ],
+      "error": null,
+      "stop_reason": null,
+      "forced_stop": false,
+      "pid": 34740,
+      "exit_code": 0,
+      "observed_until": 1507795.3795297,
+      "spill_cleaned": true,
+      "summary": {
+        "outcome": "SUCCESS",
+        "workload_seconds": 259.6092742001638,
+        "sample_count": 250,
+        "workload_sample_count": 240,
+        "peak_sampled_rss_bytes": 670928896,
+        "peak_os_threads": 23,
+        "average_cpu_cores": 4.441946428224824,
+        "peak_sampled_spill_file_bytes": 2046361600
+      }
+    }
+  ],
+  "comparison_runs": [
+    "calibration_2",
+    "one_cursor",
+    "two_connections",
+    "two_cursors"
+  ],
+  "finished_at": "2026-10-09T12:15:51.187431+00:00"
+}

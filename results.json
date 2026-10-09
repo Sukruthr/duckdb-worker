@@ -1,0 +1,110 @@
+{
+  "run_at_utc": "2026-10-09T04:25:16.851068+00:00",
+  "duckdb_version": "1.5.6",
+  "threads": 1,
+  "preserve_insertion_order": false,
+  "measurement_notes": {
+    "reported_peak_buffer_bytes": "Raw system_peak_buffer_memory from the profiler. DuckDB 1.5.6 overstates this metric; it is not a reliable actual memory peak.",
+    "peak_spill_bytes": "Peak temporary storage occupancy, not cumulative disk writes.",
+    "display_units": "MiB = 1024**2 bytes; SQL MB and GB are decimal."
+  },
+  "dataset": {
+    "url": "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2024-01.parquet",
+    "rows": 2964624,
+    "columns": 19,
+    "download_bytes": 49961641
+  },
+  "queries": {
+    "scan": "SELECT count(*) AS trips, sum(trip_distance) AS miles FROM trips",
+    "sort": "\n        SELECT * FROM trips\n        ORDER BY total_amount DESC, tpep_pickup_datetime\n    "
+  },
+  "results": [
+    {
+      "name": "scan_128mb",
+      "query": "scan",
+      "memory_limit": "128MB",
+      "spill_limit": "1GB",
+      "status": "success",
+      "reported_peak_buffer_bytes": 12484608,
+      "peak_spill_bytes": 0,
+      "sort_rows": null,
+      "error": null,
+      "elapsed_seconds": 0.014456299832090735,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\scan_128mb.json"
+    },
+    {
+      "name": "sort_2gb",
+      "query": "sort",
+      "memory_limit": "2GB",
+      "spill_limit": "1GB",
+      "status": "success",
+      "reported_peak_buffer_bytes": 783958016,
+      "peak_spill_bytes": 0,
+      "sort_rows": 2964624,
+      "error": null,
+      "elapsed_seconds": 1.610520499991253,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\sort_2gb.json"
+    },
+    {
+      "name": "sort_256mb",
+      "query": "sort",
+      "memory_limit": "256MB",
+      "spill_limit": "1GB",
+      "status": "success",
+      "reported_peak_buffer_bytes": 391223296,
+      "peak_spill_bytes": 145063936,
+      "sort_rows": 2964624,
+      "error": null,
+      "elapsed_seconds": 1.989375300006941,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\sort_256mb.json"
+    },
+    {
+      "name": "sort_128mb",
+      "query": "sort",
+      "memory_limit": "128MB",
+      "spill_limit": "1GB",
+      "status": "success",
+      "reported_peak_buffer_bytes": 221622272,
+      "peak_spill_bytes": 164626432,
+      "sort_rows": 2964624,
+      "error": null,
+      "elapsed_seconds": 2.0482234000228345,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\sort_128mb.json"
+    },
+    {
+      "name": "sort_no_spill",
+      "query": "sort",
+      "memory_limit": "128MB",
+      "spill_limit": null,
+      "status": "expected_failure",
+      "reported_peak_buffer_bytes": null,
+      "peak_spill_bytes": null,
+      "sort_rows": null,
+      "error": "Out of Memory Error: failed to pin block of size 256.0 KiB (121.8 MiB/122.0 MiB used)\nDatabase is launched in in-memory mode and no temporary directory is specified.\nUnused blocks cannot be offloaded to disk.\n\nLaunch the database with a persistent storage back-end\nOr set SET temp_directory='/path/to/tmp.tmp'\n\nPossible solutions:\n* Reducing the number of threads (SET threads=X)\n* Disabling insertion-order preservation (SET preserve_insertion_order=false)\n* Increasing the memory limit (SET memory_limit='...GB')\n\nSee also https://duckdb.org/docs/stable/guides/performance/how_to_tune_workloads",
+      "elapsed_seconds": 0.17514800000935793,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\sort_no_spill.json"
+    },
+    {
+      "name": "sort_spill_cap",
+      "query": "sort",
+      "memory_limit": "128MB",
+      "spill_limit": "1MB",
+      "status": "expected_failure",
+      "reported_peak_buffer_bytes": null,
+      "peak_spill_bytes": null,
+      "sort_rows": null,
+      "error": "Out of Memory Error: failed to offload data block of size 64.0 KiB (928.0 KiB/976.5 KiB used).\nThis limit was set by the 'max_temp_directory_size' setting.\nBy default, this setting utilizes the available disk space on the drive where the 'temp_directory' is located.\nYou can adjust this setting, by using (for example) PRAGMA max_temp_directory_size='10GiB'\n\nPossible solutions:\n* Reducing the number of threads (SET threads=X)\n* Disabling insertion-order preservation (SET preserve_insertion_order=false)\n* Increasing the memory limit (SET memory_limit='...GB')\n\nSee also https://duckdb.org/docs/stable/guides/performance/how_to_tune_workloads",
+      "elapsed_seconds": 0.32071870006620884,
+      "profile_file": "C:\\Users\\sukru\\Documents\\Codex\\2026-10-08\\i-x20\\outputs\\profiles\\sort_spill_cap.json"
+    }
+  ],
+  "checks": {
+    "scan_succeeds_without_spill": true,
+    "high_memory_sort_has_no_spill": true,
+    "constrained_sort_succeeds_with_spill": true,
+    "successful_sorts_process_all_rows": true,
+    "no_spill_fails_for_expected_reason": true,
+    "spill_cap_fails_for_expected_reason": true,
+    "no_unexpected_failures": true
+  }
+}
